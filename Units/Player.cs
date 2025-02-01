@@ -2,6 +2,7 @@
 using GamePrototype.Items.EquipItems;
 using GamePrototype.Utils;
 using System.Text;
+using EquipSlot = GamePrototype.Items.EquipItems.EquipSlot;
 
 namespace GamePrototype.Units
 {
@@ -13,16 +14,16 @@ namespace GamePrototype.Units
         {            
         }
 
-        public override uint GetUnitDamage()
+        public uint UnitDamage()
         {
-            if (_equipment.TryGetValue(EquipSlot.Weapon, out var item) && item is Weapon weapon) 
+            if (_equipment.TryGetValue(EquipSlot.RangeWeapon, out var item) && item is RangeWeapon weapon) 
             {
                 return BaseDamage + weapon.Damage;
             }
             return BaseDamage;
         }
 
-        public override void HandleCombatComplete()
+        public void HandleCombat()
         {
             var items = Inventory.Items;
             for (int i = 0; i < items.Count; i++) 
@@ -34,15 +35,35 @@ namespace GamePrototype.Units
                 }
             }
         }
-
-        public override void AddItemToInventory(Item item)
+        public class Item
         {
-            if (item is EquipItem equipItem && _equipment.TryAdd(equipItem.Slot, equipItem)) 
+            public string Name { get; set; }
+        }
+
+        public abstract class EquipItem : Item
+        {
+            public uint Durability { get; protected set; }
+            public abstract EquipSlot Slot { get; }
+
+            protected EquipItem(uint durability, string name)
             {
-                // Item was equipped
-                return;
+                Name = name;
+                Durability = durability;
             }
-            base.AddItemToInventory(item);
+        }
+
+        public void AddItemToInventory(Item item)
+        {
+            if (item is EquipItem equipItem)
+            {
+                // Логика для EquipItem
+                Console.WriteLine($"Добавлен предмет экипировки: {equipItem.Name}");
+            }
+            else
+            {
+                // Логика для обычного Item
+                Console.WriteLine($"Добавлен обычный предмет: {item.Name}");
+            }
         }
 
         private void UseEconomicItem(EconomicItem economicItem)
@@ -53,9 +74,9 @@ namespace GamePrototype.Units
             }
         }
 
-        protected override uint CalculateAppliedDamage(uint damage)
+        protected uint CalculateDamage(uint damage)
         {
-            if (_equipment.TryGetValue(EquipSlot.Armour, out var item) && item is Armour armour) 
+            if (_equipment.TryGetValue(EquipSlot.Helmet, out var item) && item is Helmet armour) 
             {
                 damage -= (uint)(damage * (armour.Defence / 100f));
             }
@@ -74,6 +95,21 @@ namespace GamePrototype.Units
                 builder.AppendLine($"[{items[i].Name}] : {items[i].Amount}");
             }
             return builder.ToString();
+        }
+
+        protected override uint CalculateAppliedDamage(uint damage)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override uint GetUnitDamage()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void HandleCombatComplete()
+        {
+            throw new NotImplementedException();
         }
     }
 }

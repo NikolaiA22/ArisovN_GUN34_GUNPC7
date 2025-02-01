@@ -3,22 +3,86 @@ using GamePrototype.Utils;
 
 namespace GamePrototype.Items.EquipItems
 {
-    public abstract class EquipItem : Item
+    // Базовый класс для экипировки
+    public abstract class EquipItem
     {
-        private uint _durability;
-        private uint _maxDurability;
-        public uint Durability { get => _durability; protected set => _durability = value; }
-        public override bool Stackable => false;
-
+        public uint Durability { get; protected set; }
+        public string Name { get; }
         public abstract EquipSlot Slot { get; }
 
-        protected EquipItem(uint maxDurability, string name) : base(name) => _maxDurability = maxDurability;
+        protected EquipItem(uint durability, string name)
+        {
+            Durability = durability;
+            Name = name;
+        }
 
-        public void ReduceDurability(uint delta) => _durability -= delta;
+        public void TakeDamage()
+        {
+            if (Durability > 0)
+            {
+                Durability--;
+                Console.WriteLine($"{Name} получил урон. Осталось прочности: {Durability}");
+            }
+            else
+            {
+                Console.WriteLine($"{Name} полностью сломан!");
+            }
+        }
 
-        public void Repair(uint delta) => 
-            _durability += _durability + delta > _maxDurability 
-            ? _maxDurability 
-            : _durability + delta;
+        public void Repair(uint amount)
+        {
+            Durability += amount;
+            Console.WriteLine($"{Name} восстановлен на {amount}. Теперь прочность: {Durability}");
+        }
+    }
+
+    // Класс дальнобойного оружия
+    public sealed class Weapon : EquipItem
+    {
+        public Weapon(uint damage, uint durability, string name) : base(durability, name) => Damage = damage;
+        public uint Damage { get; }
+
+        public override EquipSlot Slot => EquipSlot.RangeWeapon;
+    }
+
+    // Класс шлема
+    public sealed class Armour : EquipItem
+    {
+        public Armour(uint defence, uint durability, string name) : base(durability, name) => Defence = defence;
+
+        public uint Defence { get; }
+
+        public override EquipSlot Slot => EquipSlot.Helmet;
+    }
+
+    // Класс точильного камня
+    public sealed class SharpeningStone : InventoryItem
+    {
+        public SharpeningStone(string name) : base(name) { }
+
+        public void Use(EquipItem item)
+        {
+            item.Repair(5); // Восстанавливаем 5 единиц прочности
+            Console.WriteLine($"Точильный камень использован на {item.Name}.");
+        }
+    }
+
+    public class InventoryItem
+    {
+        public string Name { get; }
+
+        // Конструктор, принимающий имя
+        public InventoryItem(string name)
+        {
+            Name = name;
+        }
+    }
+
+    // Перечисление для слотов экипировки
+    public enum EquipSlot
+    {
+        Armour,
+        RangeWeapon,
+        Helmet
     }
 }
