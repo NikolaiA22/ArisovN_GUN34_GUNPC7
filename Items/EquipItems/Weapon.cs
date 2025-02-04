@@ -1,17 +1,13 @@
-﻿using GamePrototype.Units;
+﻿using GamePrototype.Utils;
 
 namespace GamePrototype.Items.EquipItems
 {
-    public class RangeWeapon : Player.EquipItem
+    public class Weapon : EquipItem
     {
+        public Weapon(uint damage, uint durability, string name) : base(durability, name) => Damage = damage;
+
         public uint Damage { get; }
 
-        public RangeWeapon(uint damage, uint durability, string name) : base(durability, name)
-        {
-            Damage = damage;
-        }
-
-        public override EquipSlot Slot => EquipSlot.RangeWeapon;
+        public override EquipSlot Slot => EquipSlot.Weapon;
     }
 }
-
