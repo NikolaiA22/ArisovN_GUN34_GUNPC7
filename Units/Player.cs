@@ -7,58 +7,11 @@ namespace GamePrototype.Units
 {
     public sealed class Player : Unit
     {
-        public Armour EquippedArmour { get; private set; }
-        public Weapon EquippedWeapon { get; private set; }
 
         private readonly Dictionary<EquipSlot, EquipItem> _equipment = new();
 
         public Player(string name, uint health, uint maxHealth, uint baseDamage) : base(name, health, maxHealth, baseDamage)
         {            
-        }
-        public void EquipItem(EquipItem item)
-        {
-            if (item == null)
-                throw new ArgumentNullException(nameof(item));
-
-            if (_equipment.TryGetValue(item.Slot, out var oldItem))
-            {
-                AddItemToInventory(oldItem);
-                Console.WriteLine($"[System]: {oldItem.Name} был снят и возвращен в инвентарь.");
-            }
-
-            _equipment[item.Slot] = item;
-            Console.WriteLine($"Экипирован {item.Name} в слот {item.Slot}");
-
-            if (item is Armour armour)
-            {
-                EquippedArmour = armour;
-            }
-            else if (item is Weapon weapon)
-            {
-                EquippedWeapon = weapon;
-            }
-        }
-        public void UnequipItem(EquipSlot slot)
-        {
-            if (_equipment.TryGetValue(slot, out var item))
-            {
-                AddItemToInventory(item);
-                _equipment.Remove(slot);
-                Console.WriteLine($"Снят {item.Name} из слота {slot}");
-
-                if (slot == EquipSlot.Armour)
-                {
-                    EquippedArmour = null;
-                }
-                else if (slot == EquipSlot.Weapon)
-                {
-                    EquippedWeapon = null;
-                }
-            }
-            else
-            {
-                Console.WriteLine($"[System]: Нет предмета экипированого в {slot}.");
-            }
         }
 
         public override uint GetUnitDamage()
@@ -85,25 +38,35 @@ namespace GamePrototype.Units
 
         public override void AddItemToInventory(Item item)
         {
-            if (item is EquipItem equipItem && _equipment.TryAdd(equipItem.Slot, equipItem)) 
+            if (item is EquipItem equipItem)
             {
-                // Item was equipped
-                return;
+                if (_equipment.TryGetValue(equipItem.Slot, out var oldItem))
+                {
+                    base.AddItemToInventory(oldItem);
+                    Console.WriteLine($"[System]: {oldItem.Name} был снят и возвращен в инвентарь.");
+                }
+
+                _equipment[equipItem.Slot] = equipItem;
+                Console.WriteLine($"Экипирован {equipItem.Name} в слот {equipItem.Slot}");
             }
-            base.AddItemToInventory(item);
+            else
+            {
+                base.AddItemToInventory(item);
+            }
         }
 
-        private void UseEconomicItem(EconomicItem economicItem, EquipItem equipItemToRestore = null)
+        private void UseEconomicItem(EconomicItem economicItem)
         {
-            if (economicItem is HealthPotion healthPotion) 
+            if (economicItem is HealthPotion healthPotion)
             {
                 Health += healthPotion.HealthRestore;
+                return;
             }
-            else if (economicItem is Grindstone grindstone)
+            if (economicItem is Grindstone grindstone)
             {
-                if (equipItemToRestore != null)
+                foreach (var item in _equipment.Values)
                 {
-                    equipItemToRestore.Repair(grindstone.DurabilityRestore);
+                    item.Repair(grindstone.DurabilityRestore);
                 }
             }
         }

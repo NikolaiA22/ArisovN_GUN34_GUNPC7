@@ -2,7 +2,10 @@
 {
     public enum EquipSlot
     {
+        Head,
         Weapon,
-        Armour
+        Armour,
+        LeftHand,
+        RightHand
     }
 }

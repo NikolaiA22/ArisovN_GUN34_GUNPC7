@@ -2,6 +2,8 @@
 using GamePrototype.Dungeon;
 using GamePrototype.Units;
 using GamePrototype.Utils;
+using static GamePrototype.Utils.DungeonBuilder;
+using System;
 
 namespace GamePrototype.Game
 {
@@ -23,11 +25,38 @@ namespace GamePrototype.Game
         private void Initialize()
         {
             Console.WriteLine("Welcome, player!");
-            _dungeon = DungeonBuilder.BuildDungeon();
+            var difficulty = ChooseDifficulty();
+            DungeonBuilder builder = difficulty == "easy"
+                ? new EasyDungeonBuilder(new HardUnitFactory())
+                : new HardDungeonBuilder(new EasyUnitFactory());
+            _dungeon = builder.BuildDungeon();
             Console.WriteLine("Enter your name");
-            _player = UnitFactoryDemo.CreatePlayer(Console.ReadLine());
+            UnitFactoryDemo factory = new EasyUnitFactory();
+            _player = factory.CreatePlayer(Console.ReadLine());
             Console.WriteLine($"Hello {_player.Name}");
+            //Console.WriteLine("Welcome, player!");
+            //DungeonBuilder builder = new EasyDungeonBuilder(new EasyUnitFactory());
+            //_dungeon = builder.BuildDungeon();
+            //Console.WriteLine("Enter your name");
+            //UnitFactoryDemo factory = new EasyUnitFactory();
+            //_player = factory.CreatePlayer(Console.ReadLine());
+            //Console.WriteLine($"Hello {_player.Name}");
         }
+        private string ChooseDifficulty()
+{
+    Console.WriteLine("Choose difficulty level (easy/hard):");
+    string choice;
+    while (true)
+    {
+        choice = Console.ReadLine().ToLower();
+        if (choice == "easy" || choice == "hard")
+        {
+            break;
+        }
+        Console.WriteLine("Invalid choice. Please select 'easy' or 'hard'.");
+    }
+    return choice;
+}
 
         private void StartGameLoop()
         {

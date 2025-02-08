@@ -21,27 +21,33 @@ namespace GamePrototype.Items.EquipItems
             ? _maxDurability 
             : _durability + delta;
     }
-    public sealed class LeatherArmour : Armour
+    public sealed class Helmet : Armour
     {
-        public LeatherArmour() : base(defence: 5, durability: 20, name: "Leather Armour")
+        public override EquipSlot Slot => EquipSlot.Head;
+        public Helmet() : base(defence: 5, durability: 20, name: "Helmet")
         {
         }
     }
-    public sealed class IronArmour : Armour
+    public sealed class WoodShield : Weapon
     {
-        public IronArmour() : base(defence: 15, durability: 30, name: "Iron Armour")
+        public override EquipSlot Slot => EquipSlot.LeftHand;
+        public WoodShield() : base(damage: 10, durability: 25, name: "WoodShield")
         {
         }
     }
     public sealed class Sword : Weapon
     {
-        public Sword() : base(damage: 10, durability: 25, name: "Sword")
+        public override EquipSlot Slot => EquipSlot.RightHand;
+
+        public Sword() : base(damage: 15, durability: 30, name: "Sword")
         {
         }
     }
     public sealed class Bow : Weapon
     {
-        public Bow() : base(damage: 7, durability: 20, name: "Bow")
+        public override EquipSlot Slot => EquipSlot.Weapon;
+
+        public Bow() : base(damage: 15, durability: 30, name: "Bow")
         {
         }
     }

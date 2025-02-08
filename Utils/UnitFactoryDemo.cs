@@ -11,16 +11,51 @@ namespace GamePrototype.Utils
     }
     public abstract class UnitFactoryDemo
     {
-        public static Unit CreatePlayer(string name)
+        public abstract Unit CreatePlayer(string name);
+        //{
+        //var player = new Player(name, 30, 30, 6);
+        //player.AddItemToInventory(new Weapon(10, 15, "Sword"));
+        //player.AddItemToInventory(new Armour(10, 15, "Armour"));
+        //player.AddItemToInventory(new HealthPotion("Potion"));
+        //player.AddItemToInventory(new Grindstone("Stone"));
+        //return player;
+        //}
+
+        public abstract Unit CreateGoblinEnemy();
+        //=> new Goblin(GameConstants.Goblin, 18, 18, 2);
+    }
+    public class EasyUnitFactory : UnitFactoryDemo
+    {
+        public override Unit CreatePlayer(string name)
         {
-            var player = new Player(name, 30, 30, 6);
-            player.AddItemToInventory(new Weapon(10, 15, "Sword"));
-            player.AddItemToInventory(new Armour(10, 15, "Armour"));
+            var player = new Player(name, 40, 40, 8);
+            player.AddItemToInventory(new Weapon(12, 20, "Sword"));
+            player.AddItemToInventory(new Armour(12, 20, "Armour"));
             player.AddItemToInventory(new HealthPotion("Potion"));
             player.AddItemToInventory(new Grindstone("Stone"));
             return player;
         }
-        
-        public static Unit CreateGoblinEnemy() => new Goblin(GameConstants.Goblin, 18, 18, 2);
+
+        public override Unit CreateGoblinEnemy()
+        {
+            return new Goblin(GameConstants.Goblin, 15, 15, 1);
+        }
+    }
+    public class HardUnitFactory : UnitFactoryDemo
+    {
+        public override Unit CreatePlayer(string name)
+        {
+            var player = new Player(name, 20, 20, 4);
+            player.AddItemToInventory(new Weapon(8, 10, "Sword"));
+            player.AddItemToInventory(new Armour(8, 10, "Armour"));
+            player.AddItemToInventory(new HealthPotion("Potion"));
+            player.AddItemToInventory(new Grindstone("Stone"));
+            return player;
+        }
+
+        public override Unit CreateGoblinEnemy()
+        {
+            return new Goblin(GameConstants.Goblin, 25, 25, 3);
+        }
     }
 }
