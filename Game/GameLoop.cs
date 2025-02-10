@@ -26,37 +26,35 @@ namespace GamePrototype.Game
         {
             Console.WriteLine("Welcome, player!");
             var difficulty = ChooseDifficulty();
-            DungeonBuilder builder = difficulty == "easy"
-                ? new EasyDungeonBuilder(new HardUnitFactory())
-                : new HardDungeonBuilder(new EasyUnitFactory());
+            UnitFactoryDemo factory = difficulty == Difficulty.Easy
+                ? new EasyUnitFactory()
+                : new HardUnitFactory();
+            DungeonBuilder builder = difficulty == Difficulty.Easy
+                ? new EasyDungeonBuilder(factory)
+                : new HardDungeonBuilder(factory);
             _dungeon = builder.BuildDungeon();
             Console.WriteLine("Enter your name");
-            UnitFactoryDemo factory = new EasyUnitFactory();
             _player = factory.CreatePlayer(Console.ReadLine());
             Console.WriteLine($"Hello {_player.Name}");
-            //Console.WriteLine("Welcome, player!");
-            //DungeonBuilder builder = new EasyDungeonBuilder(new EasyUnitFactory());
-            //_dungeon = builder.BuildDungeon();
-            //Console.WriteLine("Enter your name");
-            //UnitFactoryDemo factory = new EasyUnitFactory();
-            //_player = factory.CreatePlayer(Console.ReadLine());
-            //Console.WriteLine($"Hello {_player.Name}");
         }
-        private string ChooseDifficulty()
-{
-    Console.WriteLine("Choose difficulty level (easy/hard):");
-    string choice;
-    while (true)
-    {
-        choice = Console.ReadLine().ToLower();
-        if (choice == "easy" || choice == "hard")
+        private Difficulty ChooseDifficulty()
         {
-            break;
+            Console.WriteLine("Choose difficulty level (easy/hard):");
+            string choice;
+            while (true)
+            {
+                choice = Console.ReadLine().ToLower();
+                if (choice == "easy")
+                {
+                    return Difficulty.Easy;
+                }
+                else if (choice == "hard")
+                {
+                    return Difficulty.Hard;
+                }
+                Console.WriteLine("Invalid choice. Please select 'easy' or 'hard'.");
+            }
         }
-        Console.WriteLine("Invalid choice. Please select 'easy' or 'hard'.");
-    }
-    return choice;
-}
 
         private void StartGameLoop()
         {

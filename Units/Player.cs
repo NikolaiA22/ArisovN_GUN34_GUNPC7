@@ -70,6 +70,16 @@ namespace GamePrototype.Units
                 }
             }
         }
+        public void TakeDamage(uint damage)
+        {
+            uint appliedDamage = CalculateAppliedDamage(damage);
+            Health -= appliedDamage;
+            foreach (var item in _equipment.Values)
+            {
+                item.ReduceDurability(appliedDamage);
+            }
+            Console.WriteLine($"{Name} получил {appliedDamage} урона. Текущая здоровье: {Health}/{MaxHealth}");
+        }
 
         protected override uint CalculateAppliedDamage(uint damage)
         {

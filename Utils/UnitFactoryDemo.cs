@@ -12,17 +12,8 @@ namespace GamePrototype.Utils
     public abstract class UnitFactoryDemo
     {
         public abstract Unit CreatePlayer(string name);
-        //{
-        //var player = new Player(name, 30, 30, 6);
-        //player.AddItemToInventory(new Weapon(10, 15, "Sword"));
-        //player.AddItemToInventory(new Armour(10, 15, "Armour"));
-        //player.AddItemToInventory(new HealthPotion("Potion"));
-        //player.AddItemToInventory(new Grindstone("Stone"));
-        //return player;
-        //}
 
         public abstract Unit CreateGoblinEnemy();
-        //=> new Goblin(GameConstants.Goblin, 18, 18, 2);
     }
     public class EasyUnitFactory : UnitFactoryDemo
     {
